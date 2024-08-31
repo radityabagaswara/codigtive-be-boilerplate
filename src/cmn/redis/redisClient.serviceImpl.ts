@@ -12,13 +12,13 @@ export class RedisService implements RedisClientService {
   async delete(prefix: string, key: string): Promise<void> {
     console.log('RedisService.delete', `${prefix}:${key}`);
 
-    return Promise.resolve(undefined);
+    return await this.redisRepository.delete(prefix, key);
   }
 
   async get(prefix: string, key: string): Promise<string | null> {
     console.log('RedisService.get', `${prefix}:${key}`);
 
-    return Promise.resolve(undefined);
+    return await this.redisRepository.get(prefix, key);
   }
 
   async set(prefix: string, key: string, value: string): Promise<void> {
@@ -36,6 +36,6 @@ export class RedisService implements RedisClientService {
       'RedisService.setWithExpiry',
       `${prefix}:${key} = ${value} (${expiry})`,
     );
-    return Promise.resolve(undefined);
+    return await this.redisRepository.setWithExpiry(prefix, key, value, expiry);
   }
 }

@@ -1,22 +1,28 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { DbCfg } from '../../config/DbCfg';
 
 /**
  * Setup default connection in the application
- * @param config {ConfigService}
+ * @param configService {ConfigService}
  */
-const defaultConnection = (config: ConfigService): TypeOrmModuleOptions => ({
-  type: 'postgres',
-  host: config.get('DB_HOST'),
-  port: config.get('DB_PORT'),
-  username: config.get('DB_USERNAME'),
-  password: config.get('DB_PASSWORD'),
-  database: config.get('DB_DATABASE'),
-  autoLoadEntities: true,
-  synchronize: true,
-  logging: true,
-  entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-});
+const defaultConnection = (
+  configService: ConfigService,
+): TypeOrmModuleOptions => {
+  const dbCfg = new DbCfg(configService).toObj();
+  return {
+    type: 'postgres',
+    host: dbCfg.host,
+    port: dbCfg.port,
+    username: dbCfg.username,
+    password: dbCfg.password,
+    database: dbCfg.database,
+    autoLoadEntities: dbCfg.env == 'development',
+    synchronize: dbCfg.env == 'development',
+    logging: dbCfg.env == 'development',
+    entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+  };
+};
 
 export const databaseProviders = [
   TypeOrmModule.forRootAsync({

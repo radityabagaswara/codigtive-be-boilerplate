@@ -1,0 +1,41 @@
+import { Inject, Injectable } from '@nestjs/common';
+import { RedisRepository } from './repo/redisClient.repo';
+import { LoggerService } from '../logger/logger.service';
+
+@Injectable()
+export class RedisService implements RedisClientService {
+  constructor(
+    @Inject(RedisRepository) private readonly redisRepository: RedisRepository,
+    private readonly logger: LoggerService,
+  ) {}
+
+  async delete(prefix: string, key: string): Promise<void> {
+    console.log('RedisService.delete', `${prefix}:${key}`);
+
+    return Promise.resolve(undefined);
+  }
+
+  async get(prefix: string, key: string): Promise<string | null> {
+    console.log('RedisService.get', `${prefix}:${key}`);
+
+    return Promise.resolve(undefined);
+  }
+
+  async set(prefix: string, key: string, value: string): Promise<void> {
+    this.logger.verbose(`RedisService.set ${prefix}:${key} = ${value}`);
+    return await this.redisRepository.set(prefix, key, value);
+  }
+
+  async setWithExpiry(
+    prefix: string,
+    key: string,
+    value: string,
+    expiry: number,
+  ): Promise<void> {
+    console.log(
+      'RedisService.setWithExpiry',
+      `${prefix}:${key} = ${value} (${expiry})`,
+    );
+    return Promise.resolve(undefined);
+  }
+}

@@ -1,6 +1,6 @@
 import { Global, Module } from '@nestjs/common';
 import { LoggerService } from './logger/logger.service';
-import { RedisService } from './redis/redisClient.serviceImpl';
+import { RedisService } from './redis/redisClient.service';
 import { RedisRepository } from './redis/repo/redisClient.repo';
 import { RedisClient } from './redis/redisClientFactory';
 

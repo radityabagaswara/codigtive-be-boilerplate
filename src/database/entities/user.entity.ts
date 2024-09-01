@@ -7,9 +7,10 @@ import {
 } from 'typeorm';
 import { Token } from './token.entity';
 import { WithAudit } from '../with/with-audit';
+import { WithDeleteAudit } from '../with/with-delete-audit';
 
-@Entity()
-export class User extends WithAudit {
+@Entity({ schema: 'security' })
+export class User extends WithDeleteAudit {
   @PrimaryGeneratedColumn('uuid')
   id: number;
 

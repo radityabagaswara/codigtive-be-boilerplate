@@ -16,7 +16,7 @@ export enum TokenType {
   VERIFY_EMAIL = 'verify_email',
 }
 
-@Entity()
+@Entity({ schema: 'security' })
 export class Token extends WithAudit {
   @PrimaryGeneratedColumn()
   id: number;

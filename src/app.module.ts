@@ -4,11 +4,12 @@ import { AppService } from './app.service';
 import { Config } from './config/config.module';
 import { RedisModule } from './cmn/redis/redisClient.module';
 import { AllCmnModule } from './cmn/AllCmn.module';
-import { DatabaseModule } from './cmn/database/database.module';
+import { DatabaseModule } from './database/database.module';
+import { ApptestRepository } from './apptest.repository';
 
 @Module({
   imports: [Config, RedisModule, AllCmnModule, DatabaseModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ApptestRepository],
 })
 export class AppModule {}

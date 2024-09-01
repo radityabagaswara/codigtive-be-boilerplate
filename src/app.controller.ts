@@ -1,5 +1,6 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Injectable, Query, Scope } from '@nestjs/common';
 import { AppService } from './app.service';
+import { PageableRequestDto } from './cmn/pageable/dto/pageable-request.dto';
 
 @Controller()
 export class AppController {
@@ -8,5 +9,10 @@ export class AppController {
   @Get()
   getHello() {
     return this.appService.getHello();
+  }
+
+  @Get('/pageable')
+  getPageable(@Query() pageableDto: PageableRequestDto) {
+    return this.appService.getPageable(pageableDto);
   }
 }

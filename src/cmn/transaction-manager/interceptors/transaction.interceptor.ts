@@ -24,7 +24,7 @@ export class TransactionInterceptor implements NestInterceptor {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
-    // attach query manager with transaction to the request
+    // attach query manager base transaction to the request
     req[ENTITY_MANAGER_KEY] = queryRunner.manager;
 
     return next.handle().pipe(

@@ -1,7 +1,10 @@
 import { Column, DeleteDateColumn } from 'typeorm';
 import { WithAudit } from './with-audit';
 
-export abstract class WithDeleteAudit extends WithAudit {
+export abstract class WithDeleteAudit
+  extends WithAudit
+  implements WithDeletedAuditI
+{
   @DeleteDateColumn({ type: 'timestamp', nullable: true })
   deletedAt: Date;
 

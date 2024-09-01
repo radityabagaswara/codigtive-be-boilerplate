@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { WithAudit } from '../with/with-audit';
+import { WithAudit } from '../base/with-audit';
 
 @Entity()
 export class Test extends WithAudit {

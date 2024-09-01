@@ -1,6 +1,6 @@
 import { CreateDateColumn, UpdateDateColumn, Column } from 'typeorm';
 
-export abstract class WithAudit {
+export abstract class WithAudit implements WithAuditI {
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 

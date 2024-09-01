@@ -4,8 +4,8 @@ import {
   ExceptionFilter,
   HttpException,
 } from '@nestjs/common';
-import { HttpErrorType } from './http-error-type';
-import { ErrorType } from './enum';
+import { HttpErrorType } from '../http-error-type';
+import { ErrorType } from '../enum';
 import { Response } from 'express';
 
 @Catch(HttpException)
@@ -15,6 +15,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const status = +exception.getStatus();
 
+    // eslint-disable-next-line prefer-const
     let { errorType, message } = exception.getResponse() as {
       errorType: ErrorType | string;
       message: string | string[];

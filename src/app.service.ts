@@ -19,6 +19,7 @@ export class AppService {
     // const value = await this.apptestRepo.createMultiple('test');
     // console.log(value);
     // return value;
+    return 'Hello World!';
   }
 
   async getPageable(pageable: PageableRequestDto) {

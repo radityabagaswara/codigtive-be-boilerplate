@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RedisCfg } from './RedisCfg';
 import { DbCfg } from './DbCfg';
+import { UtilCfg } from './UtilCfg';
 
 @Module({
   imports: [
@@ -9,6 +10,7 @@ import { DbCfg } from './DbCfg';
       isGlobal: true,
     }),
   ],
-  providers: [ConfigService, RedisCfg, DbCfg],
+  providers: [ConfigService, RedisCfg, DbCfg, UtilCfg],
+  exports: [ConfigService, RedisCfg, DbCfg, UtilCfg],
 })
 export class Config {}

@@ -12,6 +12,9 @@ export class UserRepository extends BaseRepository {
     super(dataSource, req);
   }
 
+  async findById(id: string): Promise<User> {
+    return this.getRepository(User).findOne({ where: { id } });
+  }
   async createUser(user: CreateUserDto): Promise<any> {
     return this.getRepository(User)
       .save(await User.fromDtoC(user))

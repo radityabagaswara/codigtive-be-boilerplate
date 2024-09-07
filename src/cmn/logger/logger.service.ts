@@ -11,7 +11,7 @@ export class LoggerService implements Logger {
     const color = this.getColor(level);
     const paddedMessage = message.padEnd(100); // Ensure the message is 50 characters wide
     const lightGray = '\x1b[37m'; // Light gray color
-    return `[${timestamp}] ${color}[${level}]\x1b[0m ${paddedMessage} ${optionalParams.length ? `${lightGray}${JSON.stringify(optionalParams)}\x1b[0m` : ''}`;
+    return `[${timestamp}] ${color}[${level}]\x1b[0m ${paddedMessage} ${optionalParams.length ? `${lightGray}${optionalParams.join('\n')}\x1b[0m` : ''}`;
   }
 
   private getColor(level: string): string {

@@ -5,7 +5,7 @@ import { addMinutes, addDays, parseISO } from 'date-fns';
 import { User } from '../../../../database/entities/user.entity';
 
 @Injectable()
-export class TokenService {
+export class TokenAuthService {
   constructor(
     private jwtService: JwtService,
     private configService: ConfigService,

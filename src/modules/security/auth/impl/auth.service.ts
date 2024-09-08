@@ -1,23 +1,21 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { CreateAuthDto } from '../dto/create-auth.dto';
-import { UtilCfg } from '../../../../config/UtilCfg';
 import { UserRepository } from '../../../../cmn/module/security/user/repo/user.repository';
 import { BadRequestDto } from '../../../../cmn/http/dto/BadRequest.dto';
 import { comparePassword } from '../../../../cmn/utils/passwordCrypt.utils';
-import { TokenService } from './token.service';
+import { TokenAuthService } from './token-auth.service';
 import { TokenRepository } from '../../../../cmn/module/security/user/repo/token.repository';
 import { TokenType } from '../../../../database/entities/token.entity';
-import { RedisService } from '../../../../cmn/redis/redisClient.service';
 import { ApiOkResponse } from '@nestjs/swagger';
+import { RedisAuthService } from './redis-auth.service';
 
 @Injectable()
 export class AuthService implements AuthServiceI {
   constructor(
-    private readonly utilCfg: UtilCfg,
     @Inject(UserRepository) private readonly userRepo: UserRepository,
-    private readonly tokenService: TokenService,
+    private readonly tokenService: TokenAuthService,
     private readonly tokenRepo: TokenRepository,
-    private readonly redisService: RedisService,
+    private readonly redisAuthService: RedisAuthService,
   ) {}
 
   async refreshToken(token: string) {
@@ -43,9 +41,9 @@ export class AuthService implements AuthServiceI {
     });
 
     await this.tokenRepo.deleteById(tokenData.id);
-    await this.deleteAccessRedis(user.id);
+    await this.redisAuthService.deleteAccessRedis(user.id);
 
-    await this.storeAccessRedis(newToken.accessToken, user.id);
+    await this.redisAuthService.storeAccessRedis(newToken.accessToken, user.id);
 
     return {
       accessToken: newToken.accessToken,
@@ -101,7 +99,7 @@ export class AuthService implements AuthServiceI {
       expiresAt: token.refreshExpirate,
     });
 
-    await this.storeAccessRedis(token.accessToken, user.id);
+    await this.redisAuthService.storeAccessRedis(token.accessToken, user.id);
 
     return {
       accessToken: token.accessToken,
@@ -111,9 +109,8 @@ export class AuthService implements AuthServiceI {
   }
 
   async self(userId: string, token: string) {
-    console.log('self', userId, token);
     //check redis
-    const tokenRedis = await this.getAccessRedis(userId);
+    const tokenRedis = await this.redisAuthService.getAccessRedis(userId);
     if (!tokenRedis || tokenRedis !== token) {
       throw new BadRequestException({
         message: BadRequestDto.toDto(
@@ -132,18 +129,5 @@ export class AuthService implements AuthServiceI {
       username: user.username,
       email: user.email,
     };
-  }
-
-  async storeAccessRedis(token: string, userId: string) {
-    //15m
-    await this.redisService.setWithExpiry('user.token', userId, token, 900); //default 15m
-  }
-
-  async getAccessRedis(userId: string) {
-    return await this.redisService.get('user.token', userId);
-  }
-
-  async deleteAccessRedis(userId: string) {
-    return await this.redisService.delete('user.token', userId);
   }
 }

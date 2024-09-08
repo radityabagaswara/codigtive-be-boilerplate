@@ -6,8 +6,9 @@ import { UserRepository } from '../../../cmn/module/security/user/repo/user.repo
 import { JwtModule } from '@nestjs/jwt';
 import { JwtAccessStrategy } from '../../../cmn/strategy/jwt-access.strategy';
 import { JwtRefreshStrategy } from '../../../cmn/strategy/jwt-refresh.strategy';
-import { TokenService } from './impl/token.service';
+import { TokenAuthService } from './impl/token-auth.service';
 import { TokenRepository } from '../../../cmn/module/security/user/repo/token.repository';
+import { RedisAuthService } from './impl/redis-auth.service';
 
 @Module({
   imports: [JwtModule.register({})],
@@ -18,8 +19,9 @@ import { TokenRepository } from '../../../cmn/module/security/user/repo/token.re
     UserRepository,
     JwtAccessStrategy,
     JwtRefreshStrategy,
-    TokenService,
+    TokenAuthService,
     TokenRepository,
+    RedisAuthService,
   ],
 })
 export class AuthModule {}

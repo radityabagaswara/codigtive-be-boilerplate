@@ -1,16 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { RedisService } from './cmn/redis/redisClient.service';
-import { ApptestRepository } from './apptest.repository';
 
 import { PageableRequestDto } from './cmn/pageable/dto/pageable-request.dto';
-import { response } from 'express';
-import { statusOk, statusUnauthorized } from './cmn/http/boolean-status';
+import { statusUnauthorized } from './cmn/http/boolean-status';
 
 @Injectable()
 export class AppService {
   constructor(
     @Inject(RedisService) private readonly redisService: RedisService,
-    private readonly apptestRepo: ApptestRepository,
   ) {}
 
   async getHello() {

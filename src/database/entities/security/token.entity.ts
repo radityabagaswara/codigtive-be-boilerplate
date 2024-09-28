@@ -1,14 +1,12 @@
 import {
   Column,
-  CreateDateColumn,
   Entity,
   Index,
   ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 import { User } from './user.entity';
-import { WithAudit } from '../base/with-audit';
+import { WithAudit } from '../../base/with-audit';
 
 export enum TokenType {
   REFRESH = 'refresh',

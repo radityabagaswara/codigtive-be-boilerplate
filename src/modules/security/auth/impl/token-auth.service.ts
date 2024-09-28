@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { addMinutes, addDays, parseISO } from 'date-fns';
-import { User } from '../../../../database/entities/user.entity';
+import { User } from '../../../../database/entities/security/user.entity';
 
 @Injectable()
 export class TokenAuthService {
@@ -35,11 +35,11 @@ export class TokenAuthService {
       ),
     ]);
 
-    const refreshExpirate = this.calculateExpirationDate(
+    const refreshExpired = this.calculateExpirationDate(
       this.configService.get<string>('JWT_REFRESH_EXPIRATION'),
     );
 
-    return { accessToken, refreshToken, refreshExpirate };
+    return { accessToken, refreshToken, refreshExpired: refreshExpired };
   }
 
   private calculateExpirationDate(expiration: string): Date {

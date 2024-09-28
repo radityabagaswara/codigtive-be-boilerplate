@@ -6,7 +6,7 @@ import { Request } from 'express';
 import {
   Token,
   TokenType,
-} from '../../../../../database/entities/token.entity';
+} from '../../../../../database/entities/security/token.entity';
 
 @Injectable({ scope: Scope.REQUEST })
 export class TokenRepository extends BaseRepository {

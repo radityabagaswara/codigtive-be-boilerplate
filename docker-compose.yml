@@ -1,50 +1,51 @@
 services:
   redis:
-    container_name: ltr-redis
+    container_name: kls-redis
     image: redis:7.0.15-alpine3.20
     environment:
       - REDIS_PORT=6379
     ports:
       - 6379:6379
     networks:
-      - ltr-network
+      - kls-network
     volumes:
       - redis:/data
     restart: unless-stopped
 
   postgres:
-    container_name: ltr-postgres
+    container_name: kls-postgres
     image: postgres:16.3-alpine3.20
     environment:
-      POSTGRES_USER: ltr
-      POSTGRES_PASSWORD: ltr
-      POSTGRES_DB: ltr
+      POSTGRES_USER: kls
+      POSTGRES_PASSWORD: kls
+      POSTGRES_DB: kls
     ports:
-      - "5432:5432"
+      - '5432:5432'
     networks:
-      - ltr-network
+      - kls-network
     volumes:
       - postgres:/var/lib/postgresql/data
     restart: unless-stopped
 
   pgadmin:
-    container_name: ltr-pgadmin
+    container_name: kls-pgadmin
     image: dpage/pgadmin4
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
     ports:
-      - "5050:80"
+      - '5050:80'
     depends_on:
       - postgres
     networks:
-      - ltr-network
+      - kls-network
 
 networks:
-  ltr-network:
+  kls-network:
     driver: bridge
 
 volumes:
   postgres: {}
   redis:
     driver: local
+

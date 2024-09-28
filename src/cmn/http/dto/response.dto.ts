@@ -11,7 +11,7 @@ export class ResponseDto<T> {
   status: string;
 
   @ApiProperty()
-  payload: T;
+  data: T;
 
   @ApiProperty({ example: 1617826799860 })
   timestamp: number;

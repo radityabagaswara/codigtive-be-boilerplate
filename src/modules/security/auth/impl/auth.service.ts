@@ -5,8 +5,7 @@ import { BadRequestDto } from '../../../../cmn/http/dto/BadRequest.dto';
 import { comparePassword } from '../../../../cmn/utils/passwordCrypt.utils';
 import { TokenAuthService } from './token-auth.service';
 import { TokenRepository } from '../../../../cmn/module/security/user/repo/token.repository';
-import { TokenType } from '../../../../database/entities/token.entity';
-import { ApiOkResponse } from '@nestjs/swagger';
+import { TokenType } from '../../../../database/entities/security/token.entity';
 import { RedisAuthService } from './redis-auth.service';
 
 @Injectable()
@@ -70,36 +69,51 @@ export class AuthService implements AuthServiceI {
     if (!user) {
       throw new BadRequestException({
         message: BadRequestDto.toDto(
-          new BadRequestDto(
-            'username',
-            'Credentials does not match in our records',
-          ),
+          new BadRequestDto('username', 'Email atau password salah!'),
         ),
       });
     }
 
     const compare = await comparePassword(password, user.password);
 
-    if (!compare) {
+    if (!user.isActive) {
       throw new BadRequestException({
         message: BadRequestDto.toDto(
           new BadRequestDto(
             'email',
-            'Credentials does not match in our records',
+            'Akun tidak aktif. Silahkan hubungi support',
           ),
         ),
       });
     }
 
+    if (user.isLocked) {
+      throw new BadRequestException({
+        message: BadRequestDto.toDto(
+          new BadRequestDto('email', 'Akun terkunci. Silahkan hubungi support'),
+        ),
+      });
+    }
+
+    if (!compare) {
+      await this.userRepo.addLoginAttempt(user.id);
+      throw new BadRequestException({
+        message: BadRequestDto.toDto(
+          new BadRequestDto('username', 'Email atau password salah!'),
+        ),
+      });
+    }
     const token = await this.tokenService.generateToken(user);
     await this.tokenRepo.storeToken({
       token: token.refreshToken,
       type: TokenType.REFRESH,
       userId: user.id,
-      expiresAt: token.refreshExpirate,
+      expiresAt: token.refreshExpired,
     });
 
     await this.redisAuthService.storeAccessRedis(token.accessToken, user.id);
+
+    await this.userRepo.resetLoginAttempts(user.id);
 
     return {
       accessToken: token.accessToken,
@@ -119,7 +133,7 @@ export class AuthService implements AuthServiceI {
       });
     }
 
-    return ApiOkResponse();
+    return this.getUserData(userId);
   }
 
   async getUserData(id: string): Promise<any> {

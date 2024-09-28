@@ -1,9 +1,9 @@
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import { BaseRepository } from '../../../../transaction-manager/repository/transaction.repository';
-import { DataSource } from 'typeorm';
+import { DataSource, UpdateResult } from 'typeorm';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
-import { User } from '../../../../../database/entities/user.entity';
+import { User } from '../../../../../database/entities/security/user.entity';
 import { CreateUserDto } from '../../../../../modules/security/user/dto/create-user.dto';
 
 @Injectable({ scope: Scope.REQUEST })
@@ -29,5 +29,21 @@ export class UserRepository extends BaseRepository {
 
   async findByUsername(username: string): Promise<User> {
     return this.getRepository(User).findOneBy({ username });
+  }
+
+  async addLoginAttempt(id: string): Promise<UpdateResult> {
+    const cur = await this.getRepository(User).findOneBy({ id });
+    if (cur.loginAttempts > 3) {
+      return this.lockUser(id);
+    }
+    return this.getRepository(User).increment({ id: id }, 'loginAttempts', 1);
+  }
+
+  async resetLoginAttempts(id: string): Promise<UpdateResult> {
+    return this.getRepository(User).update({ id }, { loginAttempts: 0 });
+  }
+
+  async lockUser(id: string): Promise<UpdateResult> {
+    return this.getRepository(User).update({ id }, { isLocked: true });
   }
 }

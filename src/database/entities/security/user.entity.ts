@@ -6,9 +6,9 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Token } from './token.entity';
-import { WithDeleteAudit } from '../base/with-delete-audit';
-import { CreateUserDto } from '../../modules/security/user/dto/create-user.dto';
-import { hashPassword } from '../../cmn/utils/passwordCrypt.utils';
+import { WithDeleteAudit } from '../../base/with-delete-audit';
+import { CreateUserDto } from '../../../modules/security/user/dto/create-user.dto';
+import { hashPassword } from '../../../cmn/utils/passwordCrypt.utils';
 
 @Entity({ schema: 'security' })
 export class User extends WithDeleteAudit implements UserI {

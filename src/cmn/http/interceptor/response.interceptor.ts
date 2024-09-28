@@ -7,7 +7,6 @@ import {
 import { ResponseDto } from '../dto/response.dto';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { ErrorType } from '../enum';
 import { AllHttpType } from '../http-error-type';
 
 @Injectable()
@@ -28,7 +27,7 @@ export class HttpResponseInterceptor<T> implements NestInterceptor<T> {
     const timestamp = new Date().getTime();
     return next.handle().pipe(
       map((payload) => {
-        return { statusCode, status, payload, timestamp };
+        return { statusCode, status, data: payload, timestamp };
       }),
     );
   }
